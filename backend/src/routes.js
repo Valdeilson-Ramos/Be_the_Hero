@@ -1,15 +1,27 @@
 const express = require("express");
 const crypto = require("crypto");
+const OngController = require("./controllers/OngController");
+const IncidentController = require("./controllers/IncidentController");
+const ProfileController = require("./controllers/ProfileController");
 
 const routes = express.Router();
 
-routes.post("/ongs", (request, response) => {
-  //desestruturando o corpo da requisição do cadastro
-  const { name, email, whatsapp, city, uf } = request.body;
-  //gerando o id
-  const id = crypto.randomBytes(4).toString("HEX");
+//rota para listar as ongs cadastradas
+routes.get("/ongs", OngController.index);
 
-  return response.json();
-});
+//rota para criar uma nova ONG
+routes.post("/ongs", OngController.create);
+
+//listar casos de uma ong logada
+routes.get("/profile", ProfileController.index);
+
+//listando todos os casos
+routes.get("/incidents", IncidentController.index);
+
+//rota para criar casos
+routes.post("/incidents", IncidentController.create);
+
+//deletando um caso
+routes.delete("/incidents/:id", IncidentController.delete);
 
 module.exports = routes;
