@@ -4,7 +4,28 @@ const connection = require("../database/connection");
 module.exports = {
   //listando os casos
   async index(request, response) {
-    const incidents = await connection("incidents").select("*");
+    const { page = 1 } = request.query; //inicio da "paginação"
+
+    //implentando o contador de casos
+    const [count] = await connection("incidents").count();
+
+    const incidents = await connection("incidents")
+      //retornando os dados da ong detentora do caso
+      .join("ongs", "ongs.id", "=", "incidents.ong_id")
+
+      .limit(5) //limita a quantidade de casos a retornar por query
+      .offset((page - 1) * 5) //técnica para definir o inicio do retorno
+      .select(
+        "incidents.*",
+        "ongs.name",
+        "ongs.email",
+        "ongs.whatsapp",
+        "ongs.city",
+        "ongs.uf"
+      );
+
+    //enviando o total de registros via cabeçalho da responsta
+    response.header("X-Total-Count", count["count(*)"]);
 
     return response.json(incidents);
   },

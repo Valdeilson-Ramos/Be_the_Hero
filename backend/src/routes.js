@@ -3,8 +3,12 @@ const crypto = require("crypto");
 const OngController = require("./controllers/OngController");
 const IncidentController = require("./controllers/IncidentController");
 const ProfileController = require("./controllers/ProfileController");
+const SessionController = require("./controllers/SessionController");
 
 const routes = express.Router();
+
+//rota para criar uma sessão (logar)
+routes.post("/sessions", SessionController.create);
 
 //rota para listar as ongs cadastradas
 routes.get("/ongs", OngController.index);
